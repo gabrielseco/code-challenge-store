@@ -1,5 +1,3 @@
-/** @flow */
-
 import greeter from '../src/main';
 
 describe('greeter function', () => {
