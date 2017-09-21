@@ -19,25 +19,27 @@ const storeItems = {
   },
 };
 
-function Checkout(pricingRules) {
-  this.state = {
-    pricingRules,
-    storeItems,
-    items: {
-      VOUCHER: {
-        quantity: 0,
+const Checkout = (() => {
+  function Constructor(pricingRules) {
+    this.pricingRules = pricingRules;
+    this.state = {
+      items: {
+        VOUCHER: {
+          quantity: 0,
+        },
+        TSHIRT: {
+          quantity: 0,
+        },
+        MUG: {
+          quantity: 0,
+        },
       },
-      TSHIRT: {
-        quantity: 0,
-      },
-      MUG: {
-        quantity: 0,
-      },
-    },
-    itemsSaved: [],
-  };
-  Checkout.prototype.scan = (code) => {
-    const storeItem = this.state.storeItems[code].code;
+      itemsSaved: [],
+    };
+  }
+
+  Constructor.prototype.scan = function (code) {
+    const storeItem = storeItems[code].code;
     const items = Object.assign({}, this.state.items, {
       [code]: {
         quantity: this.state.items[code].quantity + 1,
@@ -50,49 +52,53 @@ function Checkout(pricingRules) {
     return this;
   };
 
-  Checkout.prototype.getItems = () => this.state.itemsSaved.join(',');
-
-  Checkout.prototype.getBulkDiscount = (itemQuantity, type) => {
-    return itemQuantity >= pricingRules[type].quantity ?
-      itemQuantity * pricingRules[type].price :
-      itemQuantity * this.state.storeItems[type].price;
+  Constructor.prototype.getItems = function () {
+    return this.state.itemsSaved.join(',');
   };
 
-  Checkout.prototype.getOneFreeDiscount = (itemQuantity, type) => {
-    const rest = itemQuantity % pricingRules[type].quantity === 0 ? 0 : 1;
-    const totalVouchers = parseInt(itemQuantity / pricingRules[type].quantity, 10) + rest;
-    const vouchersAfterDiscount = totalVouchers * this.state.storeItems[type].price;
+  Constructor.prototype.getBulkDiscount = function (itemQuantity, type) {
+    return itemQuantity >= this.pricingRules[type].quantity ?
+      itemQuantity * this.pricingRules[type].price :
+      itemQuantity * storeItems[type].price;
+  };
 
-    return itemQuantity >= pricingRules[type].quantity ?
+  Constructor.prototype.getOneFreeDiscount = function (itemQuantity, type) {
+    const rest = itemQuantity % this.pricingRules[type].quantity === 0 ? 0 : 1;
+    const totalVouchers = parseInt(itemQuantity / this.pricingRules[type].quantity, 10) + rest;
+    const vouchersAfterDiscount = totalVouchers * storeItems[type].price;
+
+    return itemQuantity >= this.pricingRules[type].quantity ?
       vouchersAfterDiscount :
-      (itemQuantity * this.state.storeItems[type].price);
+      (itemQuantity * storeItems[type].price);
   };
 
-  Checkout.prototype.getMugsTotal = () => {
+  Constructor.prototype.getMugsTotal = function () {
     const MUGS = this.state.items.MUG.quantity;
-    return MUGS * this.state.storeItems.MUG.price;
+    return MUGS * storeItems.MUG.price;
   };
 
-  Checkout.prototype.getShirtsTotal = () => {
-    const discountType = pricingRules.TSHIRT.type;
+  Constructor.prototype.getShirtsTotal = function () {
+    const discountType = this.pricingRules.TSHIRT.type;
     const shirtsQuantity = this.state.items.TSHIRT.quantity;
     const fn = this[`get${discountType}Discount`];
-    return fn(shirtsQuantity, 'TSHIRT');
+    return fn.call(this, shirtsQuantity, 'TSHIRT');
   };
 
-  Checkout.prototype.getVouchersTotal = () => {
-    const discountType = pricingRules.VOUCHER.type;
+  Constructor.prototype.getVouchersTotal = function () {
+    const discountType = this.pricingRules.VOUCHER.type;
     const vouchersQuantity = this.state.items.VOUCHER.quantity;
     const fn = this[`get${discountType}Discount`];
-    return fn(vouchersQuantity, 'VOUCHER');
+    return fn.call(this, vouchersQuantity, 'VOUCHER');
   };
 
-  Checkout.prototype.getTotal = () => {
+  Constructor.prototype.getTotal = function () {
     const mugsPrice = this.getMugsTotal();
     const shirtsPrice = this.getShirtsTotal();
     const vouchers = this.getVouchersTotal();
     return mugsPrice + shirtsPrice + vouchers;
   };
-}
+
+  return Constructor;
+})();
 
 export default Checkout;

@@ -1,7 +1,7 @@
 CODE CHALLENGE STORE
 =====================
 
-Install, Build and execute
+## Installation and Demo
 
 ```sh
   npm i / yarn
@@ -10,3 +10,12 @@ Install, Build and execute
 ```
 
 This executes the demo.
+
+## Tests
+
+
+You can also execute the tests with
+
+```sh
+  npm t
+```
