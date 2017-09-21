@@ -1,6 +1,6 @@
 {
   "name": "code-challenge-store",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "Code challenge",
   "engineStrict": true,
   "engines": {
