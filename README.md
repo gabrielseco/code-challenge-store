@@ -3,6 +3,8 @@ CODE CHALLENGE STORE
 
 ## Installation and Demo
 
+Node version should be v.7.0.0 or superior
+
 ```sh
   npm i / yarn
   npm run build
