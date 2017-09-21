@@ -1,9 +1,10 @@
 CODE CHALLENGE STORE
 =====================
 
-Build and execute
+Install, Build and execute
 
 ```sh
+  npm i / yarn
   npm run build
   npm start
 ```

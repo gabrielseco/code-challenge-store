@@ -93,11 +93,6 @@ function Checkout(pricingRules) {
     const vouchers = this.getVouchersTotal();
     return mugsPrice + shirtsPrice + vouchers;
   };
-
-  Checkout.prototype.getTotalOutput = () => {
-    const total = this.getTotal().toFixed(2);
-    return `Total: ${total} ${this.state.pricingRules.GENERAL.currency}`;
-  };
 }
 
 export default Checkout;
