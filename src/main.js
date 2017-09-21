@@ -1,12 +1,17 @@
 import Checkout from './Checkout';
 import pricingRules from './pricingRules';
 
+function output(total) {
+  const totalFormatted = total.toFixed(2);
+  return `Total: ${totalFormatted} ${pricingRules.GENERAL.currency}`;
+}
+
 const co1 = new Checkout(pricingRules);
 
 co1.scan('VOUCHER').scan('TSHIRT').scan('MUG');
 
 const items1 = co1.getItems();
-const total1 = co1.getTotalOutput();
+const total1 = output(co1.getTotal());
 console.log('ITEMS:', items1);
 console.log(total1);
 
@@ -14,7 +19,7 @@ const co2 = new Checkout(pricingRules);
 co2.scan('VOUCHER').scan('TSHIRT').scan('VOUCHER');
 
 const items2 = co2.getItems();
-const total2 = co2.getTotalOutput();
+const total2 = output(co2.getTotal());
 console.log('Items:', items2);
 console.log(total2);
 
@@ -27,7 +32,7 @@ co3.scan('TSHIRT')
    .scan('TSHIRT');
 
 const items3 = co3.getItems();
-const total3 = co3.getTotalOutput();
+const total3 = output(co3.getTotal());
 console.log('Items:', items3);
 console.log(total3);
 
@@ -43,7 +48,7 @@ co4.scan('VOUCHER')
 
 
 const items4 = co4.getItems();
-const total4 = co4.getTotalOutput();
+const total4 = output(co4.getTotal());
 console.log('Items:', items4);
 console.log(total4);
 
