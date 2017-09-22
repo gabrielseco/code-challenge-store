@@ -1,104 +1,63 @@
-const storeItems = {
-  VOUCHER: {
-    code: 'VOUCHER',
-    currency: '€',
-    name: 'Cabify Voucher',
-    price: 5,
-  },
-  TSHIRT: {
-    code: 'TSHIRT',
-    currency: '€',
-    name: 'Cabify T-Shirt',
-    price: 20,
-  },
-  MUG: {
-    code: 'MUG',
-    currency: '€',
-    name: 'Cabify Mug',
-    price: 7.5,
-  },
-};
-
-const Checkout = (() => {
-  function Constructor(pricingRules) {
+class Checkout {
+  constructor(pricingRules, items) {
     this.pricingRules = pricingRules;
+    this.items = items;
     this.state = {
-      items: {
-        VOUCHER: {
-          quantity: 0,
-        },
-        TSHIRT: {
-          quantity: 0,
-        },
-        MUG: {
-          quantity: 0,
-        },
-      },
       itemsSaved: [],
     };
   }
 
-  Constructor.prototype.scan = function (code) {
-    const storeItem = storeItems[code].code;
-    const items = Object.assign({}, this.state.items, {
-      [code]: {
-        quantity: this.state.items[code].quantity + 1,
-      },
-    });
+  scan(code) {
+    const storeItem = this.items.filter((item) => item.code === code);
     this.state = Object.assign({}, this.state, {
-      items,
-      itemsSaved: [...this.state.itemsSaved, ...[storeItem]],
+      itemsSaved: [...this.state.itemsSaved, ...storeItem],
     });
     return this;
-  };
+  }
 
-  Constructor.prototype.getItems = function () {
-    return this.state.itemsSaved.join(',');
-  };
+  getItems() {
+    return this.state.itemsSaved.map((item) => item.code).join(',');
+  }
 
-  Constructor.prototype.getBulkDiscount = function (itemQuantity, type) {
+  getBulkDiscount(itemQuantity, type) {
     return itemQuantity >= this.pricingRules[type].quantity ?
-      itemQuantity * this.pricingRules[type].price :
-      itemQuantity * storeItems[type].price;
-  };
+      itemQuantity * this.pricingRules[type].offer :
+      itemQuantity * this.pricingRules[type].price;
+  }
 
-  Constructor.prototype.getOneFreeDiscount = function (itemQuantity, type) {
+  getOneFreeDiscount(itemQuantity, type) {
     const rest = itemQuantity % this.pricingRules[type].quantity === 0 ? 0 : 1;
     const totalVouchers = parseInt(itemQuantity / this.pricingRules[type].quantity, 10) + rest;
-    const vouchersAfterDiscount = totalVouchers * storeItems[type].price;
+    const vouchersAfterDiscount = totalVouchers * this.pricingRules[type].price;
 
     return itemQuantity >= this.pricingRules[type].quantity ?
       vouchersAfterDiscount :
-      (itemQuantity * storeItems[type].price);
-  };
+      (itemQuantity * this.pricingRules[type].price);
+  }
 
-  Constructor.prototype.getMugsTotal = function () {
-    const MUGS = this.state.items.MUG.quantity;
-    return MUGS * storeItems.MUG.price;
-  };
+  getMugsTotal() {
+    const quantity = this.state.itemsSaved.filter((item) => item.code === 'MUG').length;
+    const price = this.pricingRules.MUG.price;
+    return quantity * price;
+  }
 
-  Constructor.prototype.getShirtsTotal = function () {
-    const discountType = this.pricingRules.TSHIRT.type;
-    const shirtsQuantity = this.state.items.TSHIRT.quantity;
+  getShirtsTotal() {
+    const discountType = this.pricingRules.TSHIRT.type;   
+    const quantity = this.state.itemsSaved.filter((item) => item.code === 'TSHIRT').length;
     const fn = this[`get${discountType}Discount`];
-    return fn.call(this, shirtsQuantity, 'TSHIRT');
-  };
+    return fn.call(this, quantity, 'TSHIRT');
+  }
 
-  Constructor.prototype.getVouchersTotal = function () {
+  getVouchersTotal() {
     const discountType = this.pricingRules.VOUCHER.type;
-    const vouchersQuantity = this.state.items.VOUCHER.quantity;
+    const quantity = this.state.itemsSaved.filter((item) => item.code === 'VOUCHER').length;
     const fn = this[`get${discountType}Discount`];
-    return fn.call(this, vouchersQuantity, 'VOUCHER');
-  };
+    return fn.call(this, quantity, 'VOUCHER');
+  }
 
-  Constructor.prototype.getTotal = function () {
-    const mugsPrice = this.getMugsTotal();
-    const shirtsPrice = this.getShirtsTotal();
-    const vouchers = this.getVouchersTotal();
-    return mugsPrice + shirtsPrice + vouchers;
-  };
-
-  return Constructor;
-})();
+  getTotal() {
+    return this.getMugsTotal() + this.getShirtsTotal() + this.getVouchersTotal();
+  }
+}
 
 export default Checkout;
