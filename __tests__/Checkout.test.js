@@ -17,11 +17,11 @@ describe('Checkout function', () => {
   });
 
   it('should get the quantities after the scan', () => {
-    expect(normalBuy.state.itemsSaved.length).toBe(4);
+    expect(normalBuy.itemsSaved.length).toBe(4);
 
-    expect(normalVoucher.state.itemsSaved.length).toBe(3);
+    expect(normalVoucher.itemsSaved.length).toBe(3);
 
-    expect(shirtsDiscount.state.itemsSaved.length).toBe(3);
+    expect(shirtsDiscount.itemsSaved.length).toBe(3);
   });
 
   it('should get the items joined by commas', () => {
