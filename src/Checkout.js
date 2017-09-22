@@ -2,21 +2,17 @@ class Checkout {
   constructor(pricingRules, items) {
     this.pricingRules = pricingRules;
     this.items = items;
-    this.state = {
-      itemsSaved: [],
-    };
+    this.itemsSaved = [];
   }
 
   scan(code) {
     const storeItem = this.items.filter((item) => item.code === code);
-    this.state = Object.assign({}, this.state, {
-      itemsSaved: [...this.state.itemsSaved, ...storeItem],
-    });
+    this.itemsSaved = [...this.itemsSaved, ...storeItem];
     return this;
   }
 
   getItems() {
-    return this.state.itemsSaved.map((item) => item.code).join(',');
+    return this.itemsSaved.map((item) => item.code).join(',');
   }
 
   getBulkDiscount(itemQuantity, type) {
@@ -36,21 +32,21 @@ class Checkout {
   }
 
   getMugsTotal() {
-    const quantity = this.state.itemsSaved.filter((item) => item.code === 'MUG').length;
+    const quantity = this.itemsSaved.filter((item) => item.code === 'MUG').length;
     const price = this.pricingRules.MUG.price;
     return quantity * price;
   }
 
   getShirtsTotal() {
     const discountType = this.pricingRules.TSHIRT.type;
-    const quantity = this.state.itemsSaved.filter((item) => item.code === 'TSHIRT').length;
+    const quantity = this.itemsSaved.filter((item) => item.code === 'TSHIRT').length;
     const fn = this[`get${discountType}Discount`];
     return fn.call(this, quantity, 'TSHIRT');
   }
 
   getVouchersTotal() {
     const discountType = this.pricingRules.VOUCHER.type;
-    const quantity = this.state.itemsSaved.filter((item) => item.code === 'VOUCHER').length;
+    const quantity = this.itemsSaved.filter((item) => item.code === 'VOUCHER').length;
     const fn = this[`get${discountType}Discount`];
     return fn.call(this, quantity, 'VOUCHER');
   }
