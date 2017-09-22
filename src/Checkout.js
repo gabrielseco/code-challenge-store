@@ -42,7 +42,7 @@ class Checkout {
   }
 
   getShirtsTotal() {
-    const discountType = this.pricingRules.TSHIRT.type;   
+    const discountType = this.pricingRules.TSHIRT.type;
     const quantity = this.state.itemsSaved.filter((item) => item.code === 'TSHIRT').length;
     const fn = this[`get${discountType}Discount`];
     return fn.call(this, quantity, 'TSHIRT');
