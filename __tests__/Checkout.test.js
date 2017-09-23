@@ -55,4 +55,19 @@ describe('Checkout function', () => {
     expect(normalVoucher.getTotal()).toBe(32.50);
     expect(shirtsDiscount.getTotal()).toBe(57);
   });
+
+  it('should get the bulk function', () => {
+    const fn = normalBuy.getDiscountFunction('BULK');
+    expect(fn.name).toBe('getBulkDiscount');
+  });
+
+  it('should get the oneFreeDiscount function', () => {
+    const fn = normalBuy.getDiscountFunction('ONEFREE');
+    expect(fn.name).toBe('getOneFreeDiscount');
+  });
+
+  it('should go to the default case and get the bulk function', () => {
+    const fn = normalBuy.getDiscountFunction('ANY');
+    expect(fn.name).toBe('getBulkDiscount');
+  });
 });
