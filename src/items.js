@@ -1,4 +1,11 @@
-export default [
+// @flow
+
+export type Item = {
+  code: string,
+  name: string
+}
+
+const items: Item[] = [
   {
     code: 'VOUCHER',
     name: 'Cabify Voucher',
@@ -12,3 +19,5 @@ export default [
     name: 'Cabify Mug',
   },
 ];
+
+export default items;

@@ -1,6 +1,6 @@
 {
   "name": "code-challenge-store",
-  "version": "2.0.1",
+  "version": "3.0.0",
   "description": "Code challenge",
   "engineStrict": true,
   "engines": {
@@ -13,18 +13,23 @@
     "babel-jest": "~19.0.0",
     "babel-plugin-transform-async-to-generator": "~6.24.1",
     "babel-plugin-transform-es2015-modules-commonjs": "~6.24.1",
+    "babel-plugin-transform-flow-strip-types": "~6.22.0",
     "babel-plugin-transform-runtime": "~6.23.0",
     "babel-preset-stage-3": "~6.24.1",
     "eslint": "~3.19.0",
     "eslint-config-airbnb-base": "~11.1.3",
     "eslint-plugin-flowtype": "~2.31.0",
     "eslint-plugin-import": "~2.2.0",
+    "flow-bin": "^0.55.0",
     "jest": "~19.0.2"
   },
   "scripts": {
     "clean": "rm -rf coverage dist tmp",
     "lint": "eslint .",
+    "flow": "flow",
+    "postlint": "npm run typecheck",
     "start": "node dist/src/main.js",
+    "typecheck": "flow check",
     "pretest": "npm run lint",
     "test": "npm run test-only",
     "test-only": "jest --coverage",

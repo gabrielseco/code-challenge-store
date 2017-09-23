@@ -3,9 +3,9 @@ import pricingRules from '../src/pricingRules';
 import items from '../src/items';
 
 describe('Checkout function', () => {
-  let normalBuy;
-  let normalVoucher;
-  let shirtsDiscount;
+  let normalBuy: Checkout;
+  let normalVoucher: Checkout;
+  let shirtsDiscount: Checkout;
   // Act before assertions
   beforeAll(async () => {
     normalBuy = new Checkout(pricingRules, items);
